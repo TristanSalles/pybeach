@@ -116,7 +116,7 @@ def moving_average(z, window_size=5):
     """
     assert isinstance(window_size, int) & \
            (window_size > 0) & \
-           (window_size < z.shape[1]), f'window_size must be int between 0 and {z.shape[1]}.'
+           (window_size < z.shape[1]), 'window_size must be int between 0 and {z.shape[1]}.'
 
     z_smooth = np.array([np.convolve(np.pad(row,
                                             (window_size//2, window_size-1-window_size//2),

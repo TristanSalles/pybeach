@@ -55,13 +55,13 @@ class Profile:
         assert isinstance(z, np.ndarray), 'z should be of type ndarray.'
         assert isinstance(window_size, int) & \
                (window_size > 0) & \
-               (window_size < len(x)), f'window_size must be int between 0 and {len(x)}.'
+               (window_size < len(x)), 'window_size must be int between 0 and len(x).'
 
         # Ensure inputs are row vectors
         x = np.atleast_1d(x)
         z = np.atleast_2d(z)
         if len(x) not in z.shape:
-            raise ValueError(f'Input x of shape ({x.shape[0]},) must share a dimension with input z which has shape {z.shape[0], z.shape[1]}.')
+            raise ValueError('Input x of shape ({x.shape[0]},) must share a dimension with input z which has shape {z.shape[0], z.shape[1]}.')
         if x.shape[0] != z.shape[1]:
             z = z.T
 
@@ -73,8 +73,8 @@ class Profile:
         z = ds.interp_nan(x, z)
         flag = np.polyfit(x, z.T, 1)[0]
         if np.any(flag > 0):
-            raise Warning(f'Input profiles should be oriented from landward (left) to seaward (right), '
-                          f'some inputted profiles appear to have the sea on the left. This may cause errors.')
+            raise Warning('Input profiles should be oriented from landward (left) to seaward (right), '
+                          'some inputted profiles appear to have the sea on the left. This may cause errors.')
 
         # Interp to 0.5 m grid
         self.x_interp = np.arange(np.min(x), np.max(x) + 0.5, 0.5)
@@ -127,13 +127,13 @@ class Profile:
         assert isinstance(clf_name, str), 'clf_name should be a string.'
         assert isinstance(no_of_output, int) & \
                (no_of_output > 0) & \
-               (no_of_output < len(self.x_interp)), f'no_of_outputs must be int between 0 and {len(self.x)}.'
+               (no_of_output < len(self.x_interp)), 'no_of_outputs must be int between 0 and {len(self.x)}.'
 
         # Define dune crest
         if dune_crest in ['max', 'rr']:
             for k in kwargs.keys():
                 if k not in ["window_size", "threshold", "water_level"]:
-                    raise Warning(f'{k} not a valid argument for predict_dunecrest()')
+                    raise Warning('{k} not a valid argument for predict_dunecrest()')
             kwargs = {k: v for k, v in kwargs.items()
                   if k in ["window_size", "threshold", "water_level"]}
             dune_crest_loc = self.predict_dunecrest(method=dune_crest, **kwargs)
@@ -146,13 +146,13 @@ class Profile:
                 all(isinstance(_, np.int64) for _ in dune_crest):
             dune_crest_loc = dune_crest
         else:
-            raise ValueError(f'dune_crest should be "max", "rr", int (of size 1 or {self.z_interp.shape[0]}), or None')
+            raise ValueError('dune_crest should be "max", "rr", int (of size 1 or {self.z_interp.shape[0]}), or None')
 
         # Load the random forest classifier
         try:
             clf = cs.load_classifier(clf_name)
         except FileNotFoundError:
-            raise FileNotFoundError(f'no classifier named {clf_name} found in classifier folder.')
+            raise FileNotFoundError('no classifier named {clf_name} found in classifier folder.')
 
         # Differentiate data
         z_diff = ds.diff_data(self.z_interp, 1)
@@ -228,7 +228,7 @@ class Profile:
         if hanning_window:
             assert isinstance(hanning_window, int) & \
                    (hanning_window > 0) & \
-                   (hanning_window < self.z_interp.shape[1]), f'window_size must be int between 0 and {self.z_interp.shape[1]}.'
+                   (hanning_window < self.z_interp.shape[1]), 'window_size must be int between 0 and {self.z_interp.shape[1]}.'
             window = np.divide(np.hanning(hanning_window), np.sum(np.hanning(hanning_window)))
         else:
             window = 1
@@ -236,7 +236,7 @@ class Profile:
         if dune_crest in ['max', 'rr']:
             for k in kwargs.keys():
                 if k not in ["window_size", "threshold", "water_level"]:
-                    raise Warning(f'{k} not a valid argument for predict_dunecrest() or predict_shoreline()')
+                    raise Warning('{k} not a valid argument for predict_dunecrest() or predict_shoreline()')
             kwargs = {k: v for k, v in kwargs.items()
                       if k in ["window_size", "threshold", "water_level"]}
             dune_crest_loc = self.predict_dunecrest(method=dune_crest, **kwargs)
@@ -249,12 +249,12 @@ class Profile:
              all(isinstance(_, np.int64) for _ in dune_crest):
             dune_crest_loc = dune_crest
         else:
-            raise ValueError(f'dune_crest should be "max", "rr", int (of size 1 or {self.z_interp.shape[0]}), or None')
+            raise ValueError('dune_crest should be "max", "rr", int (of size 1 or {self.z_interp.shape[0]}), or None')
 
         if shoreline == True:
             for k in kwargs.keys():
                 if k not in ["window_size", "threshold", "water_level"]:
-                    raise Warning(f'{k} not a valid argument for predict_dunecrest() or predict_shoreline()')
+                    raise Warning('{k} not a valid argument for predict_dunecrest() or predict_shoreline()')
             kwargs = {k: v for k, v in kwargs.items()
                       if k in ["water_level"]}
             shoreline_loc = self.predict_shoreline(**kwargs)
@@ -267,7 +267,7 @@ class Profile:
              all(isinstance(_, np.int64) for _ in shoreline):
             shoreline_loc = shoreline
         else:
-            raise ValueError(f'shoreline should be bool, or int (of size 1 or {self.z_interp.shape[0]})')
+            raise ValueError('shoreline should be bool, or int (of size 1 or {self.z_interp.shape[0]})')
 
         # Check for shoreline landward of dune crest
         mask = ((dune_crest_loc - shoreline_loc) >= 0)
@@ -323,7 +323,7 @@ class Profile:
         if dune_crest in ['max', 'rr']:
             for k in kwargs.keys():
                 if k not in ["window_size", "threshold", "water_level"]:
-                    raise Warning(f'{k} not a valid argument for predict_dunecrest() or predict_shoreline()')
+                    raise Warning('{k} not a valid argument for predict_dunecrest() or predict_shoreline()')
             kwargs = {k: v for k, v in kwargs.items()
                       if k in ["window_size", "threshold", "water_level"]}
             dune_crest_loc = self.predict_dunecrest(method=dune_crest, **kwargs)
@@ -336,12 +336,12 @@ class Profile:
              all(isinstance(_, np.int64) for _ in dune_crest):
             dune_crest_loc = dune_crest.astype(int)
         else:
-            raise ValueError(f'dune_crest should be "max", "rr", int (of size 1 or {self.z_interp.shape[0]}), or None')
+            raise ValueError('dune_crest should be "max", "rr", int (of size 1 or {self.z_interp.shape[0]}), or None')
 
         if shoreline == True:
             for k in kwargs.keys():
                 if k not in ["window_size", "threshold", "water_level"]:
-                    raise Warning(f'{k} not a valid argument for predict_dunecrest() or predict_shoreline()')
+                    raise Warning('{k} not a valid argument for predict_dunecrest() or predict_shoreline()')
             kwargs = {k: v for k, v in kwargs.items()
                       if k in ["water_level"]}
             shoreline_loc = self.predict_shoreline(**kwargs)
@@ -354,7 +354,7 @@ class Profile:
              all(isinstance(_, np.int64) for _ in shoreline):
             shoreline_loc = shoreline
         else:
-            raise ValueError(f'shoreline should be bool, or int (of size 1 or {self.z_interp.shape[0]})')
+            raise ValueError('shoreline should be bool, or int (of size 1 or {self.z_interp.shape[0]})')
 
         dt_index = np.full(self.z.shape[0], np.nan)
         for j, row in enumerate(self.z):
@@ -430,20 +430,20 @@ class Profile:
             assert isinstance(toe_window_size, int) & \
                    (toe_window_size > 0) & \
                    (toe_window_size < self.z_interp.shape[
-                       1]), f'window_size must be int between 0 and {self.z_interp.shape[1]}.'
+                       1]), 'window_size must be int between 0 and {self.z_interp.shape[1]}.'
         elif isinstance(toe_window_size, list):
             assert all(isinstance(_, int) & (_ > 0) & (_ < self.z_interp.shape[1]) for _ in
-                       toe_window_size), f'window_size must be int between 0 and {self.z_interp.shape[1]}.'
+                       toe_window_size), 'window_size must be int between 0 and {self.z_interp.shape[1]}.'
         else:
-            raise ValueError(f'window_size must bt of type int or list.')
+            raise ValueError('window_size must bt of type int or list.')
         assert isinstance(toe_threshold, (int, float)) & \
-               (toe_threshold > 0 and toe_threshold < 1), f'threshold should be number between 0 and 1, but {toe_threshold} was passed.'
-        assert isinstance(water_level, (int, float)), f'water_level should be a number, but {water_level} was passed.'
+               (toe_threshold > 0 and toe_threshold < 1), 'threshold should be number between 0 and 1, but {toe_threshold} was passed.'
+        assert isinstance(water_level, (int, float)), 'water_level should be a number, but {water_level} was passed.'
 
         if dune_crest in ['max', 'rr']:
             for k in kwargs.keys():
                 if k not in ["window_size", "threshold", "water_level"]:
-                    raise Warning(f'{k} not a valid argument for predict_dunecrest() or predict_shoreline()')
+                    raise Warning('{k} not a valid argument for predict_dunecrest() or predict_shoreline()')
             kwargs = {k: v for k, v in kwargs.items()
                       if k in ["window_size", "threshold", "water_level"]}
             dune_crest_loc = self.predict_dunecrest(method=dune_crest, **kwargs)
@@ -458,12 +458,12 @@ class Profile:
             dune_crest_loc = dune_crest.astype(int)
             dune_crest_loc = ds.interp_toe_to_grid(self.x, self.x_interp, dune_crest_loc)
         else:
-            raise ValueError(f'dune_crest should be "max", "rr", int (of size 1 or {self.z_interp.shape[0]}), or None')
+            raise ValueError('dune_crest should be "max", "rr", int (of size 1 or {self.z_interp.shape[0]}), or None')
 
         if shoreline == True:
             for k in kwargs.keys():
                 if k not in ["window_size", "threshold", "water_level"]:
-                    raise Warning(f'{k} not a valid argument for predict_dunecrest() or predict_shoreline()')
+                    raise Warning('{k} not a valid argument for predict_dunecrest() or predict_shoreline()')
             kwargs = {k: v for k, v in kwargs.items()
                       if k in ["water_level", "window_size", "threshold"]}
             shoreline_loc = self.predict_shoreline(water_level, dune_crest, **kwargs)
@@ -478,7 +478,7 @@ class Profile:
             shoreline_loc = shoreline
             shoreline_loc = ds.interp_toe_to_grid(self.x, self.x_interp, shoreline_loc)
         else:
-            raise ValueError(f'shoreline should be bool, or int (of size 1 or {self.z_interp.shape[0]})')
+            raise ValueError('shoreline should be bool, or int (of size 1 or {self.z_interp.shape[0]})')
 
         window = np.atleast_1d(toe_window_size)
         dt_index = np.full((self.z_interp.shape[0],), np.nan)
@@ -490,7 +490,7 @@ class Profile:
                         dt_index[i] = np.where(rr[dune_crest_loc[i]:shoreline_loc[i]] < toe_threshold)[0][-1] + dune_crest_loc[i]
             except:
                 dt_index[i] = np.nanargmin(rr[dune_crest_loc[i]:shoreline_loc[i]]) + dune_crest_loc[i]
-                if verbose: print(f'Threshold not exceeded for profile {i}, setting dune toe to minimum relief.')
+                if verbose: print('Threshold not exceeded for profile {i}, setting dune toe to minimum relief.')
         dt_index = ds.interp_toe_to_grid(self.x_interp, self.x, dt_index.astype(int))
         return dt_index
 
@@ -532,14 +532,14 @@ class Profile:
             if isinstance(window_size, int):
                 assert isinstance(window_size, int) & \
                        (window_size > 0) & \
-                       (window_size < self.z_interp.shape[1]), f'window_size must be int between 0 and {self.z_interp.shape[1]}.'
+                       (window_size < self.z_interp.shape[1]), 'window_size must be int between 0 and {self.z_interp.shape[1]}.'
             elif isinstance(window_size, list):
-                assert all(isinstance(_, int) & (_ > 0) & (_ < self.z_interp.shape[1]) for _ in window_size), f'window_size must be int between 0 and {self.z_interp.shape[1]}.'
+                assert all(isinstance(_, int) & (_ > 0) & (_ < self.z_interp.shape[1]) for _ in window_size), 'window_size must be int between 0 and {self.z_interp.shape[1]}.'
             else:
-                raise ValueError(f'window_size must be of type int or list.')
+                raise ValueError('window_size must be of type int or list.')
             assert isinstance(threshold, (int, float)) & \
-                   (0 < threshold < 1), f'threshold should be number between 0 and 1, but {threshold} was passed.'
-            assert isinstance(water_level, (int, float)), f'water_level should be a number, but {water_level} was passed.'
+                   (0 < threshold < 1), 'threshold should be number between 0 and 1, but {threshold} was passed.'
+            assert isinstance(water_level, (int, float)), 'water_level should be a number, but {water_level} was passed.'
             window_size = np.atleast_1d(window_size)
             dc_index = np.full((self.z_interp.shape[0],), np.nan)
             for i, row in enumerate(self.z_interp):
@@ -550,9 +550,9 @@ class Profile:
                             dc_index[i] = np.where(rr > threshold)[0][-1]
                 except:
                     dc_index[i] = np.nanargmin(rr)
-                    print(f'Threshold not found for index {i}, setting dune toe to maximum relief.')
+                    print('Threshold not found for index {i}, setting dune toe to maximum relief.')
         else:
-            raise ValueError(f'method should be "max" or "rr", not {method}.')
+            raise ValueError('method should be "max" or "rr", not {method}.')
 
         # Interp back to original x coordinates
         dc_index = ds.interp_toe_to_grid(self.x_interp, self.x, dc_index.astype(int))
@@ -590,11 +590,11 @@ class Profile:
             1-D array containing the index of the shoreline location for each profile.
 
         """
-        assert isinstance(water_level, (int, float)), f'water_level should be a number, but {water_level} was passed.'
+        assert isinstance(water_level, (int, float)), 'water_level should be a number, but {water_level} was passed.'
         if dune_crest in ['max', 'rr']:
             for k in kwargs.keys():
                 if k not in ["window", "threshold", "water_level"]:
-                    raise Warning(f'{k} not a valid argument for predict_dunecrest() or predict_shoreline()')
+                    raise Warning('{k} not a valid argument for predict_dunecrest() or predict_shoreline()')
             kwargs = {k: v for k, v in kwargs.items()
                       if k in ["window", "threshold", "water_level"]}
             dune_crest_loc = self.predict_dunecrest(method=dune_crest, **kwargs)
@@ -607,7 +607,7 @@ class Profile:
              all(isinstance(_, np.int64) for _ in dune_crest):
             dune_crest_loc = dune_crest
         else:
-            raise ValueError(f'dune_crest should be "max", "rr", int (of size 1 or {self.z_interp.shape[0]}), or None')
+            raise ValueError('dune_crest should be "max", "rr", int (of size 1 or {self.z_interp.shape[0]}), or None')
 
         sl_index = np.array([
             len(row) -
