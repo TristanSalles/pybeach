@@ -76,10 +76,12 @@ def load_classifier(clf_name):
     clf : scikit-learn classifier
         Classifier.
     """
-    clf_path = pkg_resources.resource_filename('pybeach',
-                                               'classifiers/' +
-                                                clf_name +
-                                                '.joblib')
+    # clf_path = pkg_resources.resource_filename('/home/jovyan/pybeach/pybeach/',
+    #                                            'classifiers/' +
+    #                                             clf_name +
+    #                                             '.joblib')
+    clf_path = '/home/jovyan/pybeach/pybeach/classifiers/'+clf_name+'.joblib'
+    
     with open(clf_path, 'rb') as f:
         clf = joblib.load(f)
     return clf
@@ -136,4 +138,3 @@ def create_training_data(x, z, toe, window=40, min_buffer=40, max_buffer=200):
     features = np.concatenate([z_pos, z_neg], axis=0)
     labels = np.concatenate([lab_pos, lab_neg], axis=0)
     return features, labels
-

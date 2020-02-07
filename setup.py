@@ -26,7 +26,7 @@ if __name__ == "__main__":
           description       = "Coastal Processes, Environments & Systems.",
           long_description  = long_description,
           long_description_content_type='text/markdown',
-          packages          = ['pybeach'],
+          packages          = ['pybeach','pybeach.support','pybeach.classifiers'],
           install_requires  = [
                         'numpy>=1.16.3',
                         'scikit-learn>=0.20.3',
