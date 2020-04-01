@@ -80,7 +80,7 @@ def load_classifier(clf_name):
     #                                            'classifiers/' +
     #                                             clf_name +
     #                                             '.joblib')
-    clf_path = '/home/jovyan/pybeach/pybeach/classifiers/'+clf_name+'.joblib'
+    clf_path = '/home/dataset/'+clf_name+'.joblib'
     
     with open(clf_path, 'rb') as f:
         clf = joblib.load(f)
