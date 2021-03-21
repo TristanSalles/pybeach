@@ -83,7 +83,7 @@ def load_classifier(clf_name):
 #     clf_path = pkg_resources.resource_filename(
 #         "pybeach", "classifiers/" + clf_name + ".joblib"
 #     )
-    clf_path = 'classifiers/'+clf_name+'.joblib'
+    clf_path = '../classifiers/'+clf_name+'.joblib'
     
     with open(clf_path, 'rb') as f:
         clf = joblib.load(f)
